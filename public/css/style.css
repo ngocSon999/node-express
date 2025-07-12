@@ -1,0 +1,11 @@
+@media (max-width: 768px) {
+  #sidebar {
+    display: none;
+  }
+}
+#alertBox {
+    position: fixed;
+    top: 10px;
+    right: 20px;
+    
+}

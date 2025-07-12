@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+   <div class="d-flex" id="wrapper">
+    <!-- Sidebar -->
+    <nav id="sidebar" class="bg-light border-end d-none d-md-block">
+      <div class="sidebar-heading px-3 pt-4 fw-bold">Admin Panel</div>
+      <div class="list-group list-group-flush">
+        <a href="/admin/dashboard" class="list-group-item list-group-item-action">Dashboard</a>
+        <a href="{{ routes 'userManage'}}" class="list-group-item list-group-item-action">Users</a>
+        <a href="/admin/settings" class="list-group-item list-group-item-action">Settings</a>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper" class="flex-grow-1">
+      <!-- Top bar -->
+      <nav class="navbar navbar-light bg-white border-bottom px-3 d-md-none d-block">
+        <button class="btn btn-outline-primary" id="menu-toggle">☰</button>
+      </nav>
+
+      <div class="container-fluid py-4">
+        {{{body}}}
+      </div>
+    </div>
+  </div>
+
+  <div id="alertBox"></div>
+
+    <script>
+        document.getElementById("menu-toggle").addEventListener("click", function () {
+        document.getElementById("sidebar").classList.toggle("d-none");
+        });
+        function showAlert(message, type = 'success') {
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type} alert-dismissible fade show mt-3`;
+        alert.role = 'alert';
+        alert.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        document.querySelector('#alertBox')?.appendChild(alert);
+
+        setTimeout(() => alert.remove(), 5000);
+    }
+    </script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

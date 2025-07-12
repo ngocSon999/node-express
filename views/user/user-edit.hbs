@@ -1,0 +1,68 @@
+<form id="editUserForm" enctype="multipart/form-data" class="modal-content">
+    <input type="hidden" id="userId" value="{{user.id}}">
+    <div class="modal-header">
+    <h5 class="modal-title" id="addUserModalLabel">Edit User</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+    <div class="mb-1">
+        <label for="name" class="form-label">Name</label>
+        <input name="name" type="text" class="form-control" value="{{ user.name}}" required>
+    </div>
+    <div class="mb-1">
+        <label for="email" class="form-label">Email</label>
+        <input name="email" type="email" class="form-control" value="{{ user.email}}" required>
+    </div>
+    <div class="mb-1">
+        <label for="phone" class="form-label">Phone</label>
+        <input name="phone" type="text" class="form-control" value="{{ user.phone}}" required>
+    </div>
+    <div class="mb-1">
+        <label for="avatar" class="form-label">Avatar</label>
+        <input name="avatar" type="file" class="form-control">
+    </div>
+    <div class="mb-1">
+        <label for="password" class="form-label">Password</label>
+        <input name="password" type="password" class="form-control" required>
+    </div>
+    </div>
+    <div class="modal-footer">
+    <button type="submit" class="btn btn-success btn-sm">Save</button>
+    <a class="btn btn-secondary btn-sm" href="{{ routes 'userManage'}}">Cancel</a>
+    </div>
+</form>
+
+<script>
+document.querySelector('#editUserForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    const id = document.querySelector('#userId').value;
+
+    try {
+        const res = await fetch(`/api/v1/user/update/${id}`, {
+        method: 'PUT',
+        body: formData
+        });
+        let data = {};
+        try {
+        data = await res.json(); 
+        } catch (err) {
+        data.message = 'Cannot parse error response';
+        }
+
+
+        if (res.ok) {
+            showAlert(data.message, 'success');
+            form.reset();
+            setTimeout(() => {
+                window.location.href = '/admin/user';
+            }, 1500);
+        } else {
+            showAlert(data.message || 'Error creating user', 'danger');
+        }
+    } catch (err) {
+        showAlert('Something went wrong!', 'danger');
+    }
+});
+</script>
