@@ -12,7 +12,6 @@ module.exports.requireAuth = async (req, res, next) => {
                 token = parts[1];
             }
         }
-        console.log(token)
         // Verify token
         const result = await authService.verifyToken(token);
         
@@ -50,7 +49,7 @@ function handleUnauthorized(req, res) {
 
   if (isApi) {
     return res.status(401).json({
-      success: true,
+      success: false,
       message: 'Unauthorized',
     });
   }

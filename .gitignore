@@ -3,6 +3,7 @@ node_modules/
 
 # dotenv env files
 .env.local
+.env
 
 # Logs
 logs/

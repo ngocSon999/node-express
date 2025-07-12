@@ -3,9 +3,7 @@ const authService = require('../../services/auth.service');
 
 
 exports.postLogin = catchAsync(async (req, res, next) => {
-  console.log(req)
   const { email, password } = req.body;
-
     const result = await authService.login(email, password);
 
     if (!result.success) {

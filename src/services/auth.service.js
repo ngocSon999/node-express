@@ -65,9 +65,13 @@ module.exports.verifyToken = async (token) => {
                 message: 'No token provided'
             };
         }
+        console.log('🔐 JWT_SECRET used in login:', JWT_SECRET);
 
+        console.log('token', token)
         const decoded = jwt.verify(token, JWT_SECRET);
+        console.log('decoded', decoded)
         const user = await userService.findByPk(decoded.id);
+        console.log('user', user)
 
         if (!user) {
             return {
@@ -88,6 +92,7 @@ module.exports.verifyToken = async (token) => {
             }
         };
     } catch (error) {
+        console.error('❌ JWT Verify Error:', error.name, '-', error.message);
         return {
             success: false,
             message: 'Invalid token'
