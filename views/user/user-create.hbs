@@ -1,0 +1,82 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Create New User</h3>
+                    <div class="card-tools">
+                        <a href="{{ routes 'userManage'}}" class="btn btn-secondary">Back to List</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form id="createUserForm" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input name="name" type="text" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input name="email" type="email" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input name="phone" type="text" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="avatar" class="form-label">Avatar</label>
+                            <input name="avatar" type="file" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input name="password" type="password" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="roles" class="form-label">Roles</label>
+                            <select name="roles" class="form-select" multiple>
+                                {{#each roles}}
+                                    <option value="{{this.id}}">{{this.name}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create User</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('createUserForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+
+    // Handle multiple role selection
+    const roleSelect = form.querySelector('select[name="roles"]');
+    const selectedRoles = Array.from(roleSelect.selectedOptions).map(option => option.value);
+    formData.delete('roles'); // Remove the original roles data
+    selectedRoles.forEach(roleId => {
+        formData.append('roles[]', roleId);
+    });
+
+    try {
+        const response = await fetch('/api/v1/user/create', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            const url = '{{ routes "userManage" }}';
+            showAlert('User created successfully', 'success', url);
+        } else {
+            showAlert(data.message || 'Error creating user', 'danger');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('Error creating user', 'danger');
+    }
+});
+</script>

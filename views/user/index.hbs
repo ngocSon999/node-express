@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h3 class="m-0">User Management</h3>
-  <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addUserModal">Add</button>
+  <a class="btn btn-primary btn-sm" href="{{ routes 'usercreate' }}">Create new user</a>
 </div>
 
 <table class="table table-bordered table-hover align-middle">
@@ -12,6 +12,7 @@
       <th>Email</th>
       <th>Phone</th>
       <th>Created At</th>
+      <th>Roles</th>
       <th>Action</th>
     </tr>
   </thead>
@@ -27,6 +28,11 @@
         <td>{{this.phone}}</td>
         <td>{{moment this.createdAt "DD/MM/YYYY hh:mm A" }}</td>
         <td>
+          {{#each this.roles}}
+            <span class="badge bg-info me-1">{{this.name}}</span>
+          {{/each}}
+        </td>
+        <td>
             <a href="{{routes 'userDetail' this.id}}" class="btn btn-info btn-sm">Detail</a>
             <a href="{{routes 'userEdit' this.id}}" class="btn btn-sm btn-warning">Edit</a>
             <form action="{{routes 'userDelete' this.id}}" method="GET" style="display:inline;">
@@ -41,78 +47,3 @@
     {{/each}}
   </tbody>
 </table>
-
-<!-- Modal Add New User -->
-<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form id="addUserForm" action="" method="POST" enctype="multipart/form-data" class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-1">
-          <label for="name" class="form-label">Name</label>
-          <input name="name" type="text" class="form-control" required>
-        </div>
-        <div class="mb-1">
-          <label for="email" class="form-label">Email</label>
-          <input name="email" type="email" class="form-control" required>
-        </div>
-        <div class="mb-1">
-          <label for="phone" class="form-label">Phone</label>
-          <input name="phone" type="text" class="form-control" required>
-        </div>
-        <div class="mb-1">
-          <label for="avatar" class="form-label">Avatar</label>
-          <input name="avatar" type="file" class="form-control">
-        </div>
-        <div class="mb-1">
-          <label for="password" class="form-label">Password</label>
-          <input name="password" type="password" class="form-control" required>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-success btn-sm">Create</button>
-        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<script>
-document.querySelector('#addUserForm').addEventListener('submit', async function (e) {
-e.preventDefault();
-const form = e.target;
-const formData = new FormData(form);
-    try {
-      const res = await fetch('/api/v1/user/create', {
-        method: 'POST',
-        body: formData
-      });
-      let data = {};
-      try {
-        data = await res.json(); 
-      } catch (err) {
-        data.message = 'Cannot parse error response';
-      }
-
-    const modalEl = document.getElementById('addUserModal');
-    const modalInstance = bootstrap.Modal.getInstance(modalEl);
-    
-
-    if (res.ok) {
-    showAlert(data.message, 'success');
-    form.reset();
-    modalInstance.hide();
-    setTimeout(() => window.location.reload(), 1500);
-    } else {
-    modalInstance.hide();
-    showAlert(data.message || 'Error creating user', 'danger');
-    }
-} catch (err) {
-    console.error('❌ Network Error:', err);
-    showAlert('Something went wrong!', 'danger');
-}
-});
-</script>

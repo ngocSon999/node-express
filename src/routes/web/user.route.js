@@ -8,10 +8,9 @@ const userController = require('../../controllers/web/user.controller');
 const userWebRoute = express.Router();
 
 userWebRoute.get('/', userController.getAllUsers);
-userWebRoute.get('/delete/:id', userController.getDelete);
+userWebRoute.get('/create', userController.getCreate);
 userWebRoute.get('/edit/:id', userController.getEdit);
+userWebRoute.get('/delete/:id', userController.getDelete);
 userWebRoute.get('/:id', userController.getDetail);
-
-
 
 module.exports = userWebRoute;

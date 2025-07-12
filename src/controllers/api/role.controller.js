@@ -1,5 +1,5 @@
-const { catchAsync } = require('../utils/helpers/handleError/catchAsync');
-const roleService = require('../services/role.service');
+const { catchAsync } = require('../../utils/helpers/handleError/catchAsync');
+const roleService = require('../../services/role.service');
 
 exports.create = catchAsync(async (req, res, next) => {
   try {

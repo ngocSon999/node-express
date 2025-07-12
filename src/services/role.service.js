@@ -47,7 +47,7 @@ module.exports.getAll = async () => {
   const roles = await RoleModel.findAll();
   return {
     success: true,
-    data: roles
+    data: roles.map(role => role.get({plain: true}))
   };
 };
 
