@@ -4,6 +4,7 @@ const roleController = require('../../controllers/api/role.controller');
 const router = express.Router();
 
 router.post('/', roleController.create);
+router.post('/login', roleController.postLogin);
 router.put('/:id', roleController.update);
 router.delete('/:id', roleController.delete);
 router.get('/', roleController.getAll);

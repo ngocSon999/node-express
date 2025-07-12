@@ -28,7 +28,6 @@ app.engine('.hbs', engine({
     routes: (name, param) => {
       const routes = {
         login: '/admin/auth/login',
-        logout: '/admin/auth/logout',
         dashboard: '/admin',
         userManage: '/admin/user',
         usercreate: '/admin/user/create',
@@ -66,8 +65,8 @@ const webRoutes = require('./src/routes/web/web');
 const { requireAuth } = require('./src/middlewares/auth.middleware');
 
 // Protected routes
+app.use('/api/v1', apiRoutes);
 app.use('/admin', webRoutes);
-app.use('/api/v1', requireAuth, apiRoutes);
 
 
 app.use((err, req, res, next) => {

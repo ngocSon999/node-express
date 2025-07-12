@@ -39,6 +39,27 @@
 </head>
 <body class="text-center">
     {{{body}}}
+
+    <div id="alertBox"></div>
+
     <script src="/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function showAlert(message, type = 'success', url = '#') {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show mt-3`;
+            alert.role = 'alert';
+            alert.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            document.querySelector('#alertBox')?.appendChild(alert);
+
+            setTimeout(function() {
+                alert.remove();
+                window.location.href = url;
+            }, 2000);
+        }
+    </script>
 </body>
 </html>

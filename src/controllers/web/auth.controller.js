@@ -32,8 +32,3 @@ exports.postLogin = catchAsync(async (req, res) => {
 
     res.redirect(getRoute('dashboard'));
 });
-
-exports.logout = catchAsync(async (req, res) => {
-    res.clearCookie('token'); 
-    res.redirect(getRoute('login'));
-});

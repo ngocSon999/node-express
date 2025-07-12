@@ -10,16 +10,14 @@ module.exports.requireAuth = async (req, res, next) => {
         const result = await authService.verifyToken(token);
         
         if (!result.success) {
-            const urlLogin = getRoute('login');
-            return res.redirect(urlLogin);
+           return handleUnauthorized(req, res);
         }
 
         // Add user info to request
         req.user = result.data;
         next();
     } catch (error) {
-        const urlLogin = getRoute('login');
-        return res.redirect(urlLogin);
+       return handleUnauthorized(req, res);
     }
 };
 
@@ -39,3 +37,17 @@ module.exports.guestOnly = async (req, res, next) => {
 
     next();
 };
+
+function handleUnauthorized(req, res) {
+  const isApi = req.originalUrl.startsWith('/api');
+
+  if (isApi) {
+    return res.status(401).json({
+      success: true,
+      message: 'Unauthorized',
+    });
+  }
+
+  const urlLogin = getRoute('login');
+  return res.redirect(urlLogin);
+}
