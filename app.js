@@ -4,6 +4,7 @@ const path = require('path');
 const express = require('express');
 const { engine } = require('express-handlebars');
 const moment = require('moment');
+const cookieParser = require('cookie-parser');
 
 // Load .env 
 const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV.trim()}` : '.env';
@@ -26,10 +27,9 @@ app.engine('.hbs', engine({
   helpers: {
     routes: (name, param) => {
       const routes = {
-        home: '/',
-        about: '/about',
-        contact: '/contact',
-        dashboard: '/admin/dashboard',
+        login: '/admin/auth/login',
+        logout: '/admin/auth/logout',
+        dashboard: '/admin',
         userManage: '/admin/user',
         usercreate: '/admin/user/create',
         roleManage: '/admin/role',
@@ -40,13 +40,13 @@ app.engine('.hbs', engine({
 
       };
 
-     if (typeof routes[name] === 'function') {
+      if (typeof routes[name] === 'function') {
         return routes[name](param);
       }
       return routes[name] || '#';
     },
 
-    moment: (date, format) => moment(date).format(format || 'YYYY-MM-DD HH:ii:ss')
+    moment: (date, format) => moment(date).format(format || 'YYYY-MM-DD HH:ii:ss'),
   }
 }));
 app.set('view engine', '.hbs');
@@ -58,13 +58,16 @@ app.use(express.urlencoded({ extended: true }));
 
 // Phân tích application/json
 app.use(express.json());
-
+app.use(cookieParser());
 
 const apiRoutes = require('./src/routes/api/api');
 const webRoutes = require('./src/routes/web/web');
 
+const { requireAuth } = require('./src/middlewares/auth.middleware');
+
+// Protected routes
 app.use('/admin', webRoutes);
-app.use('/api/v1', apiRoutes);
+app.use('/api/v1', requireAuth, apiRoutes);
 
 
 app.use((err, req, res, next) => {

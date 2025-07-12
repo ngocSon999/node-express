@@ -32,6 +32,21 @@ module.exports.findByPk = async (id) => {
   return user;
 };
 
+module.exports.findByEmail = async (email) => {
+  const UserModel = db[modelName.user];
+  const RoleModel = db[modelName.role];
+
+  const user = await UserModel.findOne({
+    where: { email },
+    include: [{
+      model: RoleModel,
+      through: { attributes: [] }
+    }]
+  });
+
+  return user ? user.get({ plain: true }) : null;
+};
+
 module.exports.destroy = async (id) => {
   const UserModel = db[modelName.user];
     await UserModel.destroy({

@@ -43,7 +43,7 @@ exports.delete = catchAsync(async (req, res, next) => {
 exports.getAll = catchAsync(async (req, res, next) => {
   try {
     const result = await roleService.getAll();
-    res.status(200).json(result);
+    res.status(200).json(result.data);
   } catch (error) {
     const message = error?.parent?.sqlMessage || error.message || 'Error getting roles';
     res.status(500).json({
@@ -56,7 +56,7 @@ exports.getAll = catchAsync(async (req, res, next) => {
 exports.getById = catchAsync(async (req, res, next) => {
   try {
     const result = await roleService.getById(req.params.id);
-    res.status(200).json(result);
+    res.status(200).json(result.data);
   } catch (error) {
     const message = error?.parent?.sqlMessage || error.message || 'Error getting role';
     res.status(500).json({

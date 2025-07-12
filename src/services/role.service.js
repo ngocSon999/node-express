@@ -61,6 +61,6 @@ module.exports.getById = async (id) => {
 
   return {
     success: true,
-    data: role
+    data: role.get({ plain: true })
   };
 };
