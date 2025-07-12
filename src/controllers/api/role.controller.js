@@ -56,7 +56,7 @@ exports.getAll = catchAsync(async (req, res, next) => {
 exports.getById = catchAsync(async (req, res, next) => {
   try {
     const result = await roleService.getById(req.params.id);
-    res.status(200).json(result.data);
+    res.status(200).json(result);
   } catch (error) {
     const message = error?.parent?.sqlMessage || error.message || 'Error getting role';
     res.status(500).json({
