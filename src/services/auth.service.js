@@ -78,7 +78,14 @@ module.exports.verifyToken = async (token) => {
 
         return {
             success: true,
-            data: decoded
+            data: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                avatar: user.avatar,
+                phone: user.phone,
+                roles: user.roles
+            }
         };
     } catch (error) {
         return {
