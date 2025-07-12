@@ -4,8 +4,15 @@ const { getRoute } = require('../utils/helpers/routes.helper');
 module.exports.requireAuth = async (req, res, next) => {
 
     try {
-        // Get token from cookie
-        const token = req.cookies.token;
+        let token = req.cookies.token;
+        // If not in cookie, try reading from header
+        if (!token && req.headers.authorization) {
+            const parts = req.headers.authorization.split(' ');
+            if (parts.length === 2 && parts[0] === 'Bearer') {
+                token = parts[1];
+            }
+        }
+        console.log(token)
         // Verify token
         const result = await authService.verifyToken(token);
         
