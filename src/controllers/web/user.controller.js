@@ -48,7 +48,7 @@ exports.getEdit = catchAsync(async (req, res, next) => {
     res.render('user/user-edit', {
         title: 'Edit User',
         user,
-        roles: roles,
+        roles: roles.data,
         helpers: {
             isSelected: function(roleId, userRoles) {
                 return userRoles && userRoles.some(role => role.id === roleId);
