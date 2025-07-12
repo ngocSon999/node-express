@@ -14,6 +14,7 @@
       <div class="list-group list-group-flush">
         <a href="/admin/dashboard" class="list-group-item list-group-item-action">Dashboard</a>
         <a href="{{ routes 'userManage'}}" class="list-group-item list-group-item-action">Users</a>
+        <a href="{{ routes 'roleManage'}}" class="list-group-item list-group-item-action">Roles</a>
         <a href="/admin/settings" class="list-group-item list-group-item-action">Settings</a>
       </div>
     </nav>
@@ -37,7 +38,8 @@
         document.getElementById("menu-toggle").addEventListener("click", function () {
         document.getElementById("sidebar").classList.toggle("d-none");
         });
-        function showAlert(message, type = 'success') {
+
+        function showAlert(message, type = 'success', url = '#') {
         const alert = document.createElement('div');
         alert.className = `alert alert-${type} alert-dismissible fade show mt-3`;
         alert.role = 'alert';
@@ -47,7 +49,10 @@
         `;
         document.querySelector('#alertBox')?.appendChild(alert);
 
-        setTimeout(() => alert.remove(), 5000);
+        setTimeout(function() {
+            alert.remove();
+            window.location.href = url;
+        }, 2000)
     }
     </script>
     <script src="/js/bootstrap.bundle.min.js"></script>

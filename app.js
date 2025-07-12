@@ -31,6 +31,8 @@ app.engine('.hbs', engine({
         contact: '/contact',
         dashboard: '/admin/dashboard',
         userManage: '/admin/user',
+        roleManage: '/admin/role',
+        roleCreate: '/admin/role/create',
         userDetail: (id) => `/admin/user/${id}`, 
         userEdit: (id) => `/admin/user/edit/${id}`, 
         userDelete: (id) => `/admin/user/delete/${id}`, 
