@@ -20,15 +20,36 @@
                         </div>
                         <div class="form-group">
                             <label>Permissions</label>
+                            <div class="mb-3">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="select_all" name="select_all">
+                                    <label class="custom-control-label" for="select_all">
+                                        <span>Select All</span>
+                                    </label>
+                                </div>
+                            </div>
                             <div class="row">
                                 {{#each groupedPermissions}}
                                 <div class="col-md-12 mb-3">
-                                    <h5 class="text-capitalize">{{@key}}</h5>
+                                    <div class="custom-control custom-checkbox mb-2">
+                                        <input type="checkbox" class="custom-control-input module-select-all" 
+                                               id="module_{{@key}}" 
+                                               data-module="{{@key}}">
+                                        <label class="custom-control-label" for="module_{{@key}}">
+                                            <span class="text-capitalize text-primary">{{@key}}</span>
+                                        </label>
+                                    </div>
                                     <div class="row pl-3">
                                         {{#each this}}
                                         <div class="col-md-4">
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="permission_{{this.id}}" name="permissions" value="{{this.id}}" {{#if (isSelected this.id ../../role.permissions)}}checked{{/if}}>
+                                                <input type="checkbox" 
+                                                       class="custom-control-input permission-checkbox" 
+                                                       id="permission_{{this.id}}" 
+                                                       name="permissions" 
+                                                       value="{{this.id}}"
+                                                       data-module="{{@../key}}"
+                                                       {{#if (isSelected this.id ../../role.permissions)}}checked{{/if}}>
                                                 <label class="custom-control-label" for="permission_{{this.id}}">
                                                     {{#with (split this.name)}}{{first}}{{/with}}
                                                 </label>
@@ -40,6 +61,64 @@
                                 {{/each}}
                             </div>
                         </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const selectAllCheckbox = document.getElementById('select_all');
+                                const allPermissionCheckboxes = document.querySelectorAll('.permission-checkbox');
+                                const moduleSelectAllCheckboxes = document.querySelectorAll('.module-select-all');
+
+                                updateAllCheckboxes();
+
+                                selectAllCheckbox.addEventListener('change', function() {
+                                    const isChecked = this.checked;
+                                    allPermissionCheckboxes.forEach(checkbox => {
+                                        checkbox.checked = isChecked;
+                                    });
+                                    moduleSelectAllCheckboxes.forEach(checkbox => {
+                                        checkbox.checked = isChecked;
+                                    });
+                                });
+
+                                moduleSelectAllCheckboxes.forEach(moduleCheckbox => {
+                                    moduleCheckbox.addEventListener('change', function() {
+                                        const moduleName = this.dataset.module;
+                                        const modulePermissions = document.querySelectorAll(`.permission-checkbox[data-module="${moduleName}"]`);
+                                        modulePermissions.forEach(checkbox => {
+                                            checkbox.checked = this.checked;
+                                        });
+                                        updateSelectAllCheckbox();
+                                    });
+                                });
+
+                                allPermissionCheckboxes.forEach(checkbox => {
+                                    checkbox.addEventListener('change', function() {
+                                        const moduleName = this.dataset.module;
+                                        updateModuleSelectAll(moduleName);
+                                        updateSelectAllCheckbox();
+                                    });
+                                });
+
+                                function updateModuleSelectAll(moduleName) {
+                                    const moduleCheckbox = document.querySelector(`.module-select-all[data-module="${moduleName}"]`);
+                                    const modulePermissions = document.querySelectorAll(`.permission-checkbox[data-module="${moduleName}"]`);
+                                    const allChecked = Array.from(modulePermissions).every(checkbox => checkbox.checked);
+                                    moduleCheckbox.checked = allChecked;
+                                }
+
+                                function updateSelectAllCheckbox() {
+                                    const allChecked = Array.from(allPermissionCheckboxes).every(checkbox => checkbox.checked);
+                                    selectAllCheckbox.checked = allChecked;
+                                }
+
+                                function updateAllCheckboxes() {
+                                    moduleSelectAllCheckboxes.forEach(moduleCheckbox => {
+                                        const moduleName = moduleCheckbox.dataset.module;
+                                        updateModuleSelectAll(moduleName);
+                                    });
+                                    updateSelectAllCheckbox();
+                                }
+                            });
+                        </script>
                         <button type="submit" class="btn btn-primary mt-3">Update Role</button>
                     </form>
                 </div>
