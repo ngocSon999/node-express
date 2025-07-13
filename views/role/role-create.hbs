@@ -18,6 +18,19 @@
                             <label for="description">Description</label>
                             <textarea class="form-control" id="description" name="description" rows="3"></textarea>
                         </div>
+                        <div class="form-group">
+                            <label>Permissions</label>
+                            <div class="row">
+                                {{#each permissions}}
+                                <div class="col-md-4">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="permission_{{this.id}}" name="permissions" value="{{this.id}}">
+                                        <label class="custom-control-label" for="permission_{{this.id}}">{{this.name}}</label>
+                                    </div>
+                                </div>
+                                {{/each}}
+                            </div>
+                        </div>
                         <button type="submit" class="btn btn-primary mt-3">Create Role</button>
                     </form>
                 </div>
@@ -30,9 +43,12 @@
 document.getElementById('createRoleForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
+    const selectedPermissions = Array.from(document.querySelectorAll('input[name="permissions"]:checked')).map(cb => cb.value);
+
     const formData = {
         name: document.getElementById('name').value,
-        description: document.getElementById('description').value
+        description: document.getElementById('description').value,
+        permissions: selectedPermissions
     };
 
     try {

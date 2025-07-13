@@ -3,8 +3,21 @@ const roleService = require('../../services/role.service');
 
 exports.create = catchAsync(async (req, res, next) => {
   try {
-    const result = await roleService.create(req.body);
-    res.status(200).json(result);
+    const { name, description, permissions } = req.body;
+    if (!name) {
+      return res.status(400).json({
+        success: false,
+        message: 'Role name is required'
+      });
+    }
+
+    const result = await roleService.create({ name, description, permissions });
+    
+    res.status(201).json({
+      success: true,
+      message: 'Role created successfully',
+      data: result.data
+    });
   } catch (error) {
     const message = error?.parent?.sqlMessage || error.message || 'Error creating role';
     res.status(500).json({
@@ -16,8 +29,30 @@ exports.create = catchAsync(async (req, res, next) => {
 
 exports.update = catchAsync(async (req, res, next) => {
   try {
-    const result = await roleService.update(req.params.id, req.body);
-    res.status(200).json(result);
+    const { id } = req.params;
+    const { name, description, permissions } = req.body;
+
+    if (!name) {
+      return res.status(400).json({
+        success: false,
+        message: 'Role name is required'
+      });
+    }
+
+    const result = await roleService.update(id, { name, description, permissions });
+    
+    if (!result.success) {
+      return res.status(404).json({
+        success: false,
+        message: result.message || 'Role not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Role updated successfully',
+      data: result.data
+    });
   } catch (error) {
     const message = error?.parent?.sqlMessage || error.message || 'Error updating role';
     res.status(500).json({
@@ -29,8 +64,20 @@ exports.update = catchAsync(async (req, res, next) => {
 
 exports.delete = catchAsync(async (req, res, next) => {
   try {
-    const result = await roleService.delete(req.params.id);
-    res.status(200).json(result);
+    const { id } = req.params;
+    const result = await roleService.delete(id);
+
+    if (!result.success) {
+      return res.status(404).json({
+        success: false,
+        message: result.message || 'Role not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Role deleted successfully'
+    });
   } catch (error) {
     const message = error?.parent?.sqlMessage || error.message || 'Error deleting role';
     res.status(500).json({
@@ -43,7 +90,10 @@ exports.delete = catchAsync(async (req, res, next) => {
 exports.getAll = catchAsync(async (req, res, next) => {
   try {
     const result = await roleService.getAll();
-    res.status(200).json(result.data);
+    res.status(200).json({
+      success: true,
+      data: result.data
+    });
   } catch (error) {
     const message = error?.parent?.sqlMessage || error.message || 'Error getting roles';
     res.status(500).json({
@@ -55,22 +105,20 @@ exports.getAll = catchAsync(async (req, res, next) => {
 
 exports.getById = catchAsync(async (req, res, next) => {
   try {
-    const result = await roleService.getById(req.params.id);
-    res.status(200).json(result);
-  } catch (error) {
-    const message = error?.parent?.sqlMessage || error.message || 'Error getting role';
-    res.status(500).json({
-      success: false,
-      message,
+    const { id } = req.params;
+    const result = await roleService.getById(id);
+
+    if (!result.success) {
+      return res.status(404).json({
+        success: false,
+        message: result.message || 'Role not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: result.data
     });
-  }
-});
-
-
-exports.postLogin = catchAsync(async (req, res, next) => {
-  try {
-    const result = await roleService.getById(req.params.id);
-    res.status(200).json(result);
   } catch (error) {
     const message = error?.parent?.sqlMessage || error.message || 'Error getting role';
     res.status(500).json({

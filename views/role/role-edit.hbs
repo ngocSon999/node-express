@@ -18,6 +18,19 @@
                             <label for="description">Description</label>
                             <textarea class="form-control" id="description" name="description" rows="3"></textarea>
                         </div>
+                        <div class="form-group">
+                            <label>Permissions</label>
+                            <div class="row">
+                                {{#each permissions}}
+                                <div class="col-md-4">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="permission_{{this.id}}" name="permissions" value="{{this.id}}" {{#if (isSelected this.id ../role.permissions)}}checked{{/if}}>
+                                        <label class="custom-control-label" for="permission_{{this.id}}">{{this.name}}</label>
+                                    </div>
+                                </div>
+                                {{/each}}
+                            </div>
+                        </div>
                         <button type="submit" class="btn btn-primary mt-3">Update Role</button>
                     </form>
                 </div>
@@ -39,6 +52,16 @@ async function loadRoleData() {
         if (data.success) {
             document.getElementById('name').value = data.data.name;
             document.getElementById('description').value = data.data.description || '';
+            
+            // Set permissions checkboxes
+            if (data.data.permissions) {
+                data.data.permissions.forEach(permission => {
+                    const checkbox = document.getElementById(`permission_${permission.id}`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                });
+            }
         } else {
             alert('Error loading role data');
         }
@@ -52,9 +75,12 @@ async function loadRoleData() {
 document.getElementById('editRoleForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
+    const selectedPermissions = Array.from(document.querySelectorAll('input[name="permissions"]:checked')).map(cb => cb.value);
+
     const formData = {
         name: document.getElementById('name').value,
-        description: document.getElementById('description').value
+        description: document.getElementById('description').value,
+        permissions: selectedPermissions
     };
 
     try {

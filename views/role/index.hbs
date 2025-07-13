@@ -16,11 +16,24 @@
                                 <th>Name</th>
                                 <th>Slug</th>
                                 <th>Description</th>
+                                <th>Permissions</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="roleTableBody">
-                            <!-- Role data will be loaded here dynamically -->
+                        <tbody>
+                            {{#each roles}}
+                            <tr>
+                                <td>{{this.id}}</td>
+                                <td>{{this.name}}</td>
+                                <td>{{this.slug}}</td>
+                                <td>{{this.description}}</td>
+                                <td>{{formatPermissions this.permissions}}</td>
+                                <td>
+                                    <a href="/admin/role/edit/{{this.id}}" class="btn btn-sm btn-info">Edit</a>
+                                    <button onclick="deleteRole({{this.id}})" class="btn btn-sm btn-danger">Delete</button>
+                                </td>
+                            </tr>
+                            {{/each}}
                         </tbody>
                     </table>
                 </div>
@@ -30,55 +43,34 @@
 </div>
 
 <script>
-    // Fetch and display roles
-    async function loadRoles() {
-        try {
-            const response = await fetch('/api/v1/role');
-            const data = await response.json();
-            const tableBody = document.getElementById('roleTableBody');
-            tableBody.innerHTML = '';
 
-            data.forEach(role => {
-                const row = `
-                    <tr>
-                        <td>${role.id}</td>
-                        <td>${role.name}</td>
-                        <td>${role.slug}</td>
-                        <td>${role.description || ''}</td>
-                        <td>
-                            <a href="/admin/role/edit/${role.id}" class="btn btn-sm btn-info">Edit</a>
-                            <button onclick="deleteRole(${role.id})" class="btn btn-sm btn-danger">Delete</button>
-                        </td>
-                    </tr>
-                `;
-                tableBody.innerHTML += row;
-            });
-        } catch (error) {
-            console.error('Error loading roles:', error);
-        }
-    }
 
-    // Delete role
+    // Delete role with confirmation modal
     async function deleteRole(id) {
-        if (confirm('Are you sure you want to delete this role?')) {
+        if (confirm('Are you sure you want to delete this role? This action cannot be undone.')) {
             try {
                 const response = await fetch(`/api/v1/role/${id}`, {
-                    method: 'DELETE'
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 });
+
                 const data = await response.json();
+
                 if (data.success) {
-                    showAlert('Role deleted successfully');
-                    loadRoles();
+                    showAlert('Role deleted successfully', 'success');
+                    // Reload the page after a short delay to show the alert
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
                 } else {
-                    showAlert('Error deleting role');
+                    showAlert(data.message || 'Error deleting role', 'error');
                 }
             } catch (error) {
                 console.error('Error deleting role:', error);
-                showAlert('Error deleting role');
+                showAlert('Error deleting role', 'error');
             }
         }
     }
-
-    // Load roles when page loads
-    document.addEventListener('DOMContentLoaded', loadRoles);
 </script>

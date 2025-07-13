@@ -45,6 +45,11 @@ app.engine('.hbs', engine({
     },
 
     moment: (date, format) => moment(date).format(format || 'YYYY-MM-DD HH:ii:ss'),
+
+    formatPermissions: (permissions) => {
+      if (!permissions || !Array.isArray(permissions)) return '';
+      return permissions.map(p => p.name).join(', ');
+    },
   }
 }));
 app.set('view engine', '.hbs');
