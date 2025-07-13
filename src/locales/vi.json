@@ -28,7 +28,8 @@
         "vietnamese": "Việt Nam",
         "english": "Tiếng Anh",
         "quickActions": "Thao tác nhanh",
-        "adminPanel": "Bảng quản trị"
+        "adminPanel": "Bảng quản trị",
+        "all": "Tất cả"
     },
     "auth": {
         "email": "Email",

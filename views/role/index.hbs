@@ -1,45 +1,310 @@
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h3 class="m-0">{{t 'user.management'}}</h3>
-  {{#if (hasPermission user 'create role')}}
-  <a class="btn btn-primary btn-sm" href="{{ routes 'roleCreate' }}">{{t 'role.createNew'}}</a>
-  {{/if}}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="card-title">{{t 'role.management'}}</h3>
+                        {{#if (hasPermission user 'create role')}}
+                        <a class="btn btn-primary btn-sm" href="{{ routes 'roleCreate' }}">{{t 'role.createNew'}}</a>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="text-center">ID</th>
+                                    <th>{{t 'role.name'}}</th>
+                                    <th>{{t 'role.slug'}}</th>
+                                    <th>{{t 'role.description'}}</th>
+                                    <th>{{t 'role.permissions'}}</th>
+                                    <th class="text-center">{{t 'common.actions'}}</th>
+                                </tr>
+                            </thead>
+                            <tbody id="roleTableBody">
+                                <tr>
+                                    <td colspan="6" class="text-center">
+                                        <div class="py-4">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">{{t 'common.loading'}}...</span>
+                                            </div>
+                                            <div class="mt-2">{{t 'common.loading'}}...</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>{{t 'role.name'}}</th>
-            <th>{{t 'role.slug'}}</th>
-            <th>{{t 'role.description'}}</th>
-            <th>{{t 'role.permissions'}}</th>
-            <th>{{t 'common.actions'}}</th>
-        </tr>
-    </thead>
-    <tbody>
-        {{#each roles}}
-        <tr>
-            <td>{{this.id}}</td>
-            <td>{{this.name}}</td>
-            <td>{{this.slug}}</td>
-            <td>{{this.description}}</td>
-            <td>{{formatPermissions this.permissions}}</td>
-            <td>
-                {{#if (hasPermission ../user 'update role')}}
-                <a href="/admin/role/edit/{{this.id}}" class="btn btn-sm btn-info">{{t 'common.edit'}}</a>
-                {{/if}}
-                {{#if (hasPermission ../user 'delete role')}}
-                <button class="btn btn-sm btn-danger" onclick="deleteRole({{this.id}})">{{t 'common.delete'}}</button>
-                {{/if}}
-            </td>
-        </tr>
-        {{/each}}
-    </tbody>
-</table>
+
+<style>
+    .dataTables_processing {
+        background: rgba(255, 255, 255, 0.9) !important;
+        border: none !important;
+        box-shadow: none !important;
+        z-index: 1000;
+        position: absolute;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        margin: 0 !important;
+        padding: 1rem !important;
+    }
+
+    .loading {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+
+    .spinner-border {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .table-responsive {
+        position: relative;
+        min-height: 200px;
+    }
+
+    .dataTables_wrapper .dataTables_processing {
+        height: auto;
+    }
+
+    /* Modal styles */
+    div.dtr-modal {
+        padding: 0 !important;
+    }
+
+    div.dtr-modal-content {
+        max-width: 600px;
+        border-radius: 0.5rem;
+    }
+
+    div.dtr-modal-header {
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        padding: 1rem;
+        font-weight: 600;
+    }
+
+    div.dtr-modal-close {
+        top: 12px;
+        right: 12px;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #6c757d;
+    }
+
+    div.dtr-modal-body {
+        padding: 1rem;
+    }
+
+    /* Tooltip styles */
+    .tooltip {
+        font-size: 0.875rem;
+    }
+
+    /* Table styles */
+    .table th {
+        white-space: nowrap;
+        background-color: #f8f9fa;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+    /* Button spacing */
+    .btn + .btn {
+        margin-left: 0.5rem;
+    }
+
+    /* Code style */
+    code {
+        background: #f8f9fa;
+        padding: 0.2rem 0.4rem;
+        border-radius: 0.25rem;
+        font-size: 0.875em;
+        color: #d63384;
+    }
+
+    /* Font weight */
+    .fw-medium {
+        font-weight: 500 !important;
+    }
+
+    /* Table cell padding */
+    .table > :not(caption) > * > * {
+        padding: 0.75rem;
+    }
+
+    /* Icon buttons */
+    .btn i {
+        font-size: 1rem;
+        line-height: 1;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    /* Truncate long text */
+    .table td {
+        max-width: 250px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
 
 <script>
+    function initializeDataTable() {
+        const table = $('#roleTableBody').parent();
+        if ($.fn.DataTable.isDataTable(table)) {
+            table.DataTable().destroy();
+        }
 
+        dataTable = table.DataTable({
+            processing: false,
+            serverSide: false,
+            deferRender: true,
+            language: {
+                processing: '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>'
+            },
+            ajax: {
+                 url: '/api/v1/role',
+                 type: 'GET',
+                 beforeSend: function() {
+                     table.addClass('loading');
+                 },
+                 dataSrc: function(json) {
+                     table.removeClass('loading');
+                     if (!json || !json.success) {
+                         if (json && json.message === 'Unauthorized') {
+                             window.location.href = '/admin/login';
+                             return [];
+                         }
+                         showAlert('{{t "error.500"}}', 'error');
+                         return [];
+                     }
+                     return json.data || [];
+                 },
+                 error: function(xhr, error, thrown) {
+                     table.removeClass('loading');
+                     if (xhr.status === 401) {
+                         window.location.href = '/admin/login';
+                         return [];
+                     }
+                     console.error('DataTables error:', error);
+                     showAlert('{{t "error.500"}}', 'error');
+                     return [];
+                 }
+             },
+            columns: [
+                { 
+                    data: 'id',
+                    width: '50px',
+                    className: 'text-center'
+                },
+                { 
+                    data: 'name',
+                    render: function(data, type, row) {
+                        if (type === 'display') {
+                            return `<span class="fw-medium">${data || ''}</span>`;
+                        }
+                        return data || '';
+                    }
+                },
+                { 
+                    data: 'slug',
+                    render: function(data, type, row) {
+                        if (type === 'display') {
+                            return `<code>${data || ''}</code>`;
+                        }
+                        return data || '';
+                    }
+                },
+                { 
+                    data: 'description',
+                    render: function(data, type, row) {
+                        return data || '<span class="text-muted">-</span>';
+                    }
+                },
+                { 
+                    data: 'permissions',
+                    render: function(data, type, row) {
+                        if (!data || !Array.isArray(data)) return '<span class="text-muted">-</span>';
+                        if (type === 'display') {
+                            const permissions = data.map(p => p.name);
+                            if (permissions.length > 3) {
+                                const shown = permissions.slice(0, 3);
+                                const hidden = permissions.slice(3);
+                                return `<span data-toggle="tooltip" title="${permissions.join(', ')}">
+                                    ${shown.join(', ')} <span class="text-muted">(+${hidden.length})</span>
+                                </span>`;
+                            }
+                            return permissions.join(', ');
+                        }
+                        return data.map(p => p.name).join(', ');
+                    }
+                },
+                {
+                    data: null,
+                    orderable: false,
+                    width: '150px',
+                    className: 'text-center',
+                    render: function(data, type, row) {
+                        const actionBtns = [];
+                        
+                        if (hasPermission(currentUser, 'update role')) {
+                            actionBtns.push(`<a href="/admin/role/edit/${row.id}" class="btn btn-sm btn-info" data-toggle="tooltip" title="{{t 'common.edit'}}"><i class="bi bi-pencil"></i></a>`);
+                        }
+                        if (hasPermission(currentUser, 'delete role')) {
+                            actionBtns.push(`<button class="btn btn-sm btn-danger" onclick="deleteRole(${row.id})" data-toggle="tooltip" title="{{t 'common.delete'}}"><i class="bi bi-trash"></i></button>`);
+                        }
+                        
+                        return actionBtns.join(' ');
+                    }
+                }
+            ],
+            language: {
+                url: '/js/datatable-i18n/{{currentLocale}}.json'
+            },
+            responsive: {
+                details: {
+                    display: $.fn.dataTable.Responsive.display.modal({
+                        header: function(row) {
+                            return '{{t "role.details"}} - ' + row.data().name;
+                        }
+                    }),
+                    renderer: $.fn.dataTable.Responsive.renderer.tableAll()
+                }
+            },
+            dom: '<"d-flex justify-content-between align-items-center mb-3"<"d-flex align-items-center"l><"d-flex"f>>rtip',
+            pageLength: 10,
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "{{t 'common.all'}}"]],
+            stateSave: true,
+            stateDuration: 0,
+            autoWidth: false,
+            order: [[0, 'desc']],
+            drawCallback: function(settings) {
+                $('.dataTables_processing').hide();
+                // Áp dụng tooltip nếu cần
+                $('[data-toggle="tooltip"]').tooltip();
+            },
+            preDrawCallback: function() {
+                $('.dataTables_processing').show();
+                // Hủy tooltip trước khi vẽ lại bảng
+                $('[data-toggle="tooltip"]').tooltip('dispose');
+            }
+        });
+    }
 
-    // Delete role with confirmation modal
     async function deleteRole(id) {
         if (confirm('{{t "role.deleteConfirm"}}')) {
             try {
@@ -54,14 +319,17 @@
 
                 if (data.success) {
                     showAlert('{{t "role.deleteSuccess"}}', 'success');
-                    // Reload the page after a short delay to show the alert
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1000);
+                    dataTable.ajax.reload();
+                } else if (data.message === 'Unauthorized') {
+                    window.location.href = '/admin/login';
                 } else {
                     showAlert(data.message || '{{t "role.deleteError"}}', 'error');
                 }
             } catch (error) {
+                if (error.status === 401) {
+                    window.location.href = '/admin/login';
+                    return;
+                }
                 console.error('Error deleting role:', error);
                 showAlert('{{t "error.500"}}', 'error');
             }

@@ -44,6 +44,9 @@ app.engine('.hbs', engine({
     },
     eq: (v1, v2) => v1 === v2,
     includes: (array, value) => Array.isArray(array) && array.includes(value),
+    json: function(context) {
+      return JSON.stringify(context);
+    },
     routes: (name, param) => {
       const routes = {
         login: '/admin/auth/login',
@@ -70,7 +73,7 @@ app.engine('.hbs', engine({
       user?.roles?.some(role =>
         role.permissions?.some(permission => permission.name === requiredPermission)
       ),
-  }
+    },
 }));
 app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname, 'views'));

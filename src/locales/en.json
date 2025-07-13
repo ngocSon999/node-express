@@ -29,7 +29,8 @@
         "vietnamese": "Vietnamese",
         "english": "English",
         "quickActions": "Quick Actions",
-        "adminPanel": "adminPanel"
+        "adminPanel": "adminPanel",
+        "all": "All"
     },
     "auth": {
         "email": "Email",
