@@ -66,8 +66,8 @@ module.exports.verifyToken = async (token) => {
             };
         }
         const decoded = jwt.verify(token, JWT_SECRET);
-        const user = await userService.findByPk(decoded.id);
-
+        const user = await userService.getUserWithRolePermissions(decoded.id);
+       
         if (!user) {
             return {
                 success: false,

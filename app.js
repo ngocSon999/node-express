@@ -52,7 +52,6 @@ app.engine('.hbs', engine({
       if (!permissions || !Array.isArray(permissions)) return '';
       return permissions.map(p => p.name).join(', ');
     },
-
     split: (str) => {
       if (!str) return [];
       const parts = str.split(' ');
@@ -61,6 +60,14 @@ app.engine('.hbs', engine({
         last: parts[parts.length - 1], // module (user, role, etc)
         parts: parts
       };
+    },
+    hasPermission: (user, requiredPermission) => {
+      if (!user || !user.roles) return false;
+      return user.roles.some(role => 
+        role.permissions && role.permissions.some(permission => 
+          permission.name === requiredPermission
+        )
+      );
     },
   }
 }));

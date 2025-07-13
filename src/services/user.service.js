@@ -167,3 +167,21 @@ module.exports.update = async (req) => {
   };
 };
 
+module.exports.getUserWithRolePermissions = async (id) => {
+  const UserModel = db[modelName.user];
+  const RoleModel = db[modelName.role];
+  const PermissionModel = db[modelName.permission];
+
+  const user = await UserModel.findByPk(id, {
+    include: [{
+      model: RoleModel,
+      through: { attributes: [] }, // Ẩn user_roles
+      include: [{
+        model: PermissionModel,
+        through: { attributes: [] } // Ẩn role_permissions
+      }]
+    }]
+  });
+
+  return user ? user.get({ plain: true }) : null;
+};

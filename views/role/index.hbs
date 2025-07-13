@@ -5,7 +5,9 @@
                 <div class="card-header">
                     <h3 class="card-title">Role Management</h3>
                     <div class="card-tools">
+                        {{#if (hasPermission user 'create role')}}
                         <a href="{{ routes 'roleCreate'}}" class="btn btn-primary">Create New Role</a>
+                        {{/if}}
                     </div>
                 </div>
                 <div class="card-body">
@@ -29,8 +31,12 @@
                                 <td>{{this.description}}</td>
                                 <td>{{formatPermissions this.permissions}}</td>
                                 <td>
+                                    {{#if (hasPermission ../user 'update role')}}
                                     <a href="/admin/role/edit/{{this.id}}" class="btn btn-sm btn-info">Edit</a>
-                                    <button onclick="deleteRole({{this.id}})" class="btn btn-sm btn-danger">Delete</button>
+                                    {{/if}}
+                                    {{#if (hasPermission ../user 'delete role')}}
+                                    <button class="btn btn-sm btn-danger" onclick="deleteRole({{this.id}})">Delete</button>
+                                    {{/if}}
                                 </td>
                             </tr>
                             {{/each}}
