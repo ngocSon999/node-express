@@ -9,6 +9,7 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./src/config/swagger.config');
+const i18n = require('./src/config/i18n.config');
 
 // Load .env 
 const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV.trim()}` : '.env';
@@ -28,6 +29,15 @@ app.engine('.hbs', engine({
   defaultLayout: 'main',
   layoutsDir: path.join(__dirname, 'views', 'layouts'), 
   helpers: {
+    t: function(key, options) {
+      return i18n.__(key, options.hash);
+    },
+    eq: function(v1, v2) {
+      return v1 === v2;
+    },
+    includes: function(array, value) {
+      return Array.isArray(array) && array.includes(value);
+    },
     routes: (name, param) => {
       const routes = {
         login: '/admin/auth/login',
@@ -77,6 +87,23 @@ app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Language switcher route
+const supportedLanguages = ['en', 'vi'];
+app.get('/language/:lang', (req, res) => {
+  const lang = req.params.lang;
+
+  // Kiểm tra ngôn ngữ hợp lệ
+  if (supportedLanguages.includes(lang)) {
+    res.cookie('lang', lang, {
+      maxAge: 365 * 24 * 60 * 60 * 1000, // 1 năm
+      httpOnly: false, // Cho phép frontend đọc nếu cần
+    });
+  }
+
+  // Redirect về trang trước hoặc trang chủ nếu không có referer
+  const backUrl = req.get('Referer') || '/';
+  res.redirect(backUrl);
+});
 // Phân tích application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
@@ -91,6 +118,26 @@ app.use(session({
 }));
 
 app.use(flash());
+
+// Initialize i18n middleware
+app.use(i18n.init);
+
+// Language switcher middleware
+app.use((req, res, next) => {
+  // Get language from query parameter, cookie, or header
+  const lang = req.query.lang || req.cookies.lang || req.acceptsLanguages(['en', 'vi']) || 'en';
+  
+  // Set language cookie if it doesn't exist
+  if (!req.cookies.lang) {
+    res.cookie('lang', lang, { maxAge: 365 * 24 * 60 * 60 * 1000 }); // 1 year
+  }
+
+  // Set current locale
+  req.setLocale(lang);
+  res.locals.currentLocale = lang;
+
+  next();
+});
 
 // ✅ Gắn vào res.locals
 app.use((req, res, next) => {

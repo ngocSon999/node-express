@@ -38,10 +38,12 @@ module.exports.findByEmail = async (email) => {
 
   const user = await UserModel.findOne({
     where: { email },
+    attributes: { include: ['password'] },
     include: [{
       model: RoleModel,
       through: { attributes: [] }
-    }]
+    }],
+    raw: false,
   });
 
   return user ? user.get({ plain: true }) : null;

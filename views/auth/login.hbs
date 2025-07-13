@@ -1,6 +1,6 @@
 <main class="form-signin">
     <form id="loginForm">
-        <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+        <h1 class="h3 mb-3 fw-normal">{{t 'common.login'}}</h1>
 
         {{#if error}}
         <div class="alert alert-danger" role="alert">
@@ -10,14 +10,21 @@
 
         <div class="form-floating">
             <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" value="{{email}}" required>
-            <label for="email">Email address</label>
+            <label for="email">{{t 'auth.email'}}</label>
         </div>
         <div class="form-floating">
             <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-            <label for="password">Password</label>
+            <label for="password">{{t 'auth.password'}}</label>
         </div>
 
-        <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+        <div class="form-check text-start my-3">
+            <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberMe">
+            <label class="form-check-label" for="rememberMe">
+                {{t 'auth.rememberMe'}}
+            </label>
+        </div>
+
+        <button class="w-100 btn btn-lg btn-primary" type="submit">{{t 'common.login'}}</button>
         <p class="mt-5 mb-3 text-muted">&copy; 2024</p>
     </form>
 </main>
@@ -49,11 +56,11 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             // Redirect after login
             window.location.href = '/admin';
         } else {
-            showAlert(data.message || 'Invalid email or password');
+            showAlert(data.message || '{{t "auth.loginError"}}');
         }
     } catch (error) {
         console.error('Error:', error);
-        showAlert('Error creating user', 'danger');
+        showAlert('{{t "error.500"}}', 'danger');
     }
 });
 </script>

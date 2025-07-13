@@ -1,6 +1,6 @@
 const { catchAsync } = require('../../utils/helpers/handleError/catchAsync');
 const authService = require('../../services/auth.service');
-const userService = require('../../services/user.service');
+
 
 exports.postLogin = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
@@ -30,23 +30,3 @@ exports.logout = async (req, res) => {
         });
     }
 };
-
-exports.me = catchAsync(async (req, res) => {
-    const userId = req.user.id;
-    const user = await userService.getUserWithRoles(userId);
-
-    if (!user) {
-        return res.status(404).json({
-            success: false,
-            message: 'User not found'
-        });
-    }
-
-    // Loại bỏ password trước khi trả về
-    const { password, ...userWithoutPassword } = user.toJSON();
-
-    return res.status(200).json({
-        success: true,
-        data: userWithoutPassword
-    });
-});

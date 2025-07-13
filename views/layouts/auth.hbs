@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{currentLocale}}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}}</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         html, body {
             height: 100%;
@@ -38,6 +39,23 @@
     </style>
 </head>
 <body class="text-center">
+    <!-- Language Switcher -->
+    <div class="position-fixed top-0 end-0 m-3">
+        <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-globe"></i>
+                {{#if (eq currentLocale 'en')}}
+                    English
+                {{else}}
+                    Tiếng Việt
+                {{/if}}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                <li><a class="dropdown-item {{#if (eq currentLocale 'en')}}active{{/if}}" href="/language/en">English</a></li>
+                <li><a class="dropdown-item {{#if (eq currentLocale 'vi')}}active{{/if}}" href="/language/vi">Tiếng Việt</a></li>
+            </ul>
+        </div>
+    </div>
     {{{body}}}
 
     <div id="alertBox"></div>

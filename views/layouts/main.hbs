@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{currentLocale}}">
 <head>
     <meta charset="UTF-8">
     <title>{{title}}</title>
@@ -13,9 +13,9 @@
     <nav id="sidebar" class="bg-light border-end d-none d-md-block">
       <div class="sidebar-heading px-3 pt-4 fw-bold">Admin Panel</div>
       <div class="list-group list-group-flush">
-        <a href="{{ routes 'dashboard'}}" class="list-group-item list-group-item-action">Dashboard</a>
-        <a href="{{ routes 'userManage'}}" class="list-group-item list-group-item-action">Users</a>
-        <a href="{{ routes 'roleManage'}}" class="list-group-item list-group-item-action">Roles</a>
+        <a href="{{ routes 'dashboard'}}" class="list-group-item list-group-item-action">{{t 'common.dashboard'}}</a>
+        <a href="{{ routes 'userManage'}}" class="list-group-item list-group-item-action">{{t 'common.users'}}</a>
+        <a href="{{ routes 'roleManage'}}" class="list-group-item list-group-item-action">{{t 'common.roles'}}</a>
       </div>
     </nav>
 
@@ -25,18 +25,36 @@
       <nav class="navbar navbar-light bg-white border-bottom px-3">
         <div class="d-flex justify-content-between w-100 align-items-center">
           <button class="btn btn-outline-primary d-md-none" id="menu-toggle">☰</button>
-          <div class="dropdown">
-            <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-              {{#if user.avatar}}
-                <img src="{{user.avatar}}" alt="{{user.name}}" class="rounded-circle" width="30" height="30">
-              {{else}}
-                <i class="bi bi-person-circle"></i>
-              {{/if}}
-              {{user.name}}
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-              <li><a class="dropdown-item" onclick="logout()">Logout</a></li>
-            </ul>
+          <div class="d-flex align-items-center gap-3">
+            <!-- Language Switcher -->
+            <div class="dropdown">
+              <button class="btn btn-light dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-globe"></i>
+                {{#if (eq currentLocale 'en')}}
+                  English
+                {{else}}
+                  Tiếng Việt
+                {{/if}}
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                <li><a class="dropdown-item {{#if (eq currentLocale 'en')}}active{{/if}}" href="/language/en">English</a></li>
+                <li><a class="dropdown-item {{#if (eq currentLocale 'vi')}}active{{/if}}" href="/language/vi">Tiếng Việt</a></li>
+              </ul>
+            </div>
+            <!-- User Dropdown -->
+            <div class="dropdown">
+              <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                {{#if user.avatar}}
+                  <img src="{{user.avatar}}" alt="{{user.name}}" class="rounded-circle" width="30" height="30">
+                {{else}}
+                  <i class="bi bi-person-circle"></i>
+                {{/if}}
+                {{user.name}}
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li><a class="dropdown-item" onclick="logout()">{{t 'common.logout'}}</a></li>
+              </ul>
+            </div>
           </div>
         </div>
       </nav>
