@@ -3,6 +3,8 @@ module.exports.modelName = {
     user: 'users',
     role: 'roles',
     user_role: 'user_roles',
+    permission: 'permissions',
+    role_permission: 'role_permissions',
     catalogue: 'catalogue',
     customers: 'customers',
     customersMeta: 'customers_meta',

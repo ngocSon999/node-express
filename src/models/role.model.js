@@ -45,5 +45,13 @@ module.exports = (connection) => {
         });
     };
 
+    role.associate = (models) => {
+        role.belongsToMany(models[modelName.permission], {
+            through: models[modelName.role_permission],
+            foreignKey: 'role_id',
+            otherKey: 'permission_id',
+        });
+    };
+
     return role;
 };
