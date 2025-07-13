@@ -7,6 +7,8 @@ const moment = require('moment');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./src/config/swagger.config');
 
 // Load .env 
 const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV.trim()}` : '.env';
@@ -104,6 +106,14 @@ const apiRoutes = require('./src/routes/api/api');
 const webRoutes = require('./src/routes/web/web');
 
 const { requireAuth } = require('./src/middlewares/auth.middleware');
+
+// API Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  swaggerOptions: {
+    persistAuthorization: false,
+  },
+  customSiteTitle: 'API Documentation',
+}));
 
 // Protected routes
 app.use('/api/v1', apiRoutes);
