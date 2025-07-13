@@ -3,7 +3,7 @@ const userService = require('../../services/user.service');
 const roleService = require('../../services/role.service');
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
-    const users = await userService.getAllUsers(req);
+    const users = await userService.getAll(req);
     const roles = await roleService.getAll();
 
     res.render('user/index', {
@@ -28,7 +28,7 @@ exports.getCreate = catchAsync(async (req, res, next) => {
 });
 
 exports.getDetail = catchAsync(async (req, res, next) => {
-  const user = await userService.getDetail(req.params.id);
+  const user = await userService.getById(req.params.id);
 
   if (!user) {
     return res.status(404).render('404', { message: 'User not found' });

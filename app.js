@@ -5,6 +5,8 @@ const express = require('express');
 const { engine } = require('express-handlebars');
 const moment = require('moment');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const flash = require('connect-flash');
 
 // Load .env 
 const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV.trim()}` : '.env';
@@ -72,6 +74,24 @@ app.use(express.urlencoded({ extended: true }));
 // Phân tích application/json
 app.use(express.json());
 app.use(cookieParser());
+
+app.use(session({
+    secret: 'test_flash', // nên để .env
+    resave: false,
+    saveUninitialized: false
+}));
+
+app.use(flash());
+
+// ✅ Gắn vào res.locals
+app.use((req, res, next) => {
+  const flashError = req.flash('error');
+  res.locals.error = flashError;
+  const flashSuccess = req.flash('success');
+  res.locals.success = flashSuccess;
+  next();
+});
+
 
 const apiRoutes = require('./src/routes/api/api');
 const webRoutes = require('./src/routes/web/web');

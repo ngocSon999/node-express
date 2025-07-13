@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const moment = require('moment');
 
 
-module.exports.getAllUsers = async (req) => {
+module.exports.getAll = async () => {
     const UserModel = db[modelName.user];
     const RoleModel = db[modelName.role];
 
@@ -20,7 +20,7 @@ module.exports.getAllUsers = async (req) => {
     return users.map(user => user.get({ plain: true }));
 };
 
-module.exports.getDetail = async (id) => {
+module.exports.getById = async (id) => {
   const UserModel = db[modelName.user];
   const user = await UserModel.findByPk(id, { raw: true }); // raw: true để trả plain object
   return user;
@@ -47,25 +47,16 @@ module.exports.findByEmail = async (email) => {
   return user ? user.get({ plain: true }) : null;
 };
 
-module.exports.destroy = async (id) => {
+module.exports.delete = async (id) => {
   const UserModel = db[modelName.user];
-    await UserModel.destroy({
-      where: { id: parseInt(id, 10) }
-    });
-};
+  const user = await UserModel.findByPk(id);
 
-module.exports.getUserByType = async (req, typeUsers = [typeUser.INSTALLER], filterBySite = false, jobSiteDetails = {}) => {
-    let query = `
-        SELECT *
-        FROM ${modelName.user}
-    `;
+  if (!user) {
+    return null;
+  }
 
-    const [result] = await connection.query({
-        query: query,
-        values: [...typeUsers],
-    });
-
-    return result;
+  await user.destroy();
+  return true;
 };
 
 module.exports.create = async (req) => {

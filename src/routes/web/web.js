@@ -13,6 +13,11 @@ router.get('/', requireAuth, setUser, (req, res) => {
     });
 });
 
+router.get('/403', (req, res) => {
+  res.status(403).render('403', {
+    title: '403 - Không có quyền truy cập'
+  });
+});
 
 // User management routes
 router.use('/user', [requireAuth, setUser], userWebRoutes);
