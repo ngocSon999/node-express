@@ -24,7 +24,12 @@
         "success": "Success",
         "error": "Error",
         "warning": "Warning",
-        "info": "Information"
+        "info": "Information",
+        "backToHome": "Back to Home",
+        "vietnamese": "Vietnamese",
+        "english": "English",
+        "quickActions": "Quick Actions",
+        "adminPanel": "adminPanel"
     },
     "auth": {
         "email": "Email",
@@ -52,7 +57,9 @@
         "deleteConfirm": "Are you sure you want to delete this user?",
         "createSuccess": "User created successfully",
         "updateSuccess": "User updated successfully",
-        "deleteSuccess": "User deleted successfully"
+        "deleteSuccess": "User deleted successfully",
+        "phone": "Phone",
+        "viewUsers": "View Users"
     },
     "role": {
         "management": "Role Management",
@@ -67,7 +74,10 @@
         "deleteConfirm": "Are you sure you want to delete this role?",
         "createSuccess": "Role created successfully",
         "updateSuccess": "Role updated successfully",
-        "deleteSuccess": "Role deleted successfully"
+        "deleteSuccess": "Role deleted successfully",
+        "description": "Description",
+        "slug": "Slug",
+        "viewRoles": "View Roles"
     },
     "permission": {
         "create": "Create",
@@ -90,6 +100,7 @@
         "403": "Access denied",
         "500": "Internal server error",
         "unauthorized": "Unauthorized access",
-        "forbidden": "Forbidden access"
+        "forbidden": "Forbidden access",
+        "pageNotFound": "The page you requested does not exist or has been deleted"
     }
 }

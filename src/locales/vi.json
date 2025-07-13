@@ -24,7 +24,11 @@
         "success": "Thành công",
         "error": "Lỗi",
         "warning": "Cảnh báo",
-        "info": "Thông tin"
+        "info": "Thông tin",
+        "vietnamese": "Việt Nam",
+        "english": "Tiếng Anh",
+        "quickActions": "Thao tác nhanh",
+        "adminPanel": "Bảng quản trị"
     },
     "auth": {
         "email": "Email",
@@ -52,7 +56,9 @@
         "deleteConfirm": "Bạn có chắc chắn muốn xóa người dùng này?",
         "createSuccess": "Tạo người dùng thành công",
         "updateSuccess": "Cập nhật người dùng thành công",
-        "deleteSuccess": "Xóa người dùng thành công"
+        "deleteSuccess": "Xóa người dùng thành công",
+        "phone": "Số điện thoại",
+        "viewUsers": "Xem người dùng"
     },
     "role": {
         "management": "Quản lý vai trò",
@@ -67,7 +73,10 @@
         "deleteConfirm": "Bạn có chắc chắn muốn xóa vai trò này?",
         "createSuccess": "Tạo vai trò thành công",
         "updateSuccess": "Cập nhật vai trò thành công",
-        "deleteSuccess": "Xóa vai trò thành công"
+        "deleteSuccess": "Xóa vai trò thành công",
+        "description": "Mô tả",
+        "slug": "Mã vai trò",
+        "viewRoles": "Xem vai trò"
     },
     "permission": {
         "create": "Tạo mới",
@@ -90,6 +99,7 @@
         "403": "Truy cập bị từ chối",
         "500": "Lỗi máy chủ",
         "unauthorized": "Chưa đăng nhập",
-        "forbidden": "Không có quyền truy cập"
+        "forbidden": "Không có quyền truy cập",
+        "pageNotFound": "Trang bạn yêu cầu không tồn tại hoặc đã bị xóa"
     }
 }

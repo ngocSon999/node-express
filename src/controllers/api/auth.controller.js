@@ -30,3 +30,21 @@ exports.logout = async (req, res) => {
         });
     }
 };
+
+// controllers/auth.controller.js
+exports.me = (req, res) => {
+  const user = req.user; // `requireAuth` middleware phải gán `req.user` trước đó
+
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      message: 'Unauthorized',
+    });
+  }
+
+  return res.json({
+    success: true,
+    data: user,
+  });
+};
+

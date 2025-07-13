@@ -1,7 +1,31 @@
-<h2>User Detail</h2>
-<ul>
-  <li><strong>Name:</strong> {{user.name}}</li>
-  <li><strong>Email:</strong> {{user.email}}</li>
-  <li><strong>Phone:</strong> {{user.phone}}</li>
-  <li><strong>Avatar:</strong> <img src="{{user.avatar}}" style="width: 50px;"></li>
-</ul>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{{t 'user.detail'}}</h3>
+                    <div class="card-tools">
+                        <a href="/user" class="btn btn-secondary">{{t 'common.back'}}</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>{{t 'user.name'}}:</strong> {{user.name}}</li>
+                        <li class="list-group-item"><strong>{{t 'user.email'}}:</strong> {{user.email}}</li>
+                        <li class="list-group-item"><strong>{{t 'user.phone'}}:</strong> {{user.phone}}</li>
+                        <li class="list-group-item">
+                            <strong>{{t 'user.avatar'}}:</strong>
+                            <img src="{{user.avatar}}" alt="{{t 'user.avatar'}}" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+                        </li>
+                        <li class="list-group-item">
+                            <strong>{{t 'user.roles'}}:</strong>
+                            {{#each user.roles}}
+                                <span class="badge bg-info me-1">{{this.name}}</span>
+                            {{/each}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

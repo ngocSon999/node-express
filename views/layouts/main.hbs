@@ -11,7 +11,7 @@
    <div class="d-flex" id="wrapper">
     <!-- Sidebar -->
     <nav id="sidebar" class="bg-light border-end d-none d-md-block">
-      <div class="sidebar-heading px-3 pt-4 fw-bold">Admin Panel</div>
+      <div class="sidebar-heading px-3 pt-4 fw-bold">{{t 'common.adminPanel'}}</div>
       <div class="list-group list-group-flush">
         <a href="{{ routes 'dashboard'}}" class="list-group-item list-group-item-action">{{t 'common.dashboard'}}</a>
         <a href="{{ routes 'userManage'}}" class="list-group-item list-group-item-action">{{t 'common.users'}}</a>
@@ -31,14 +31,14 @@
               <button class="btn btn-light dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="bi bi-globe"></i>
                 {{#if (eq currentLocale 'en')}}
-                  English
+                  {{t 'common.english'}}
                 {{else}}
-                  Tiếng Việt
+                  {{t 'common.vietnamese'}}
                 {{/if}}
               </button>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
-                <li><a class="dropdown-item {{#if (eq currentLocale 'en')}}active{{/if}}" href="/language/en">English</a></li>
-                <li><a class="dropdown-item {{#if (eq currentLocale 'vi')}}active{{/if}}" href="/language/vi">Tiếng Việt</a></li>
+                <li><a class="dropdown-item {{#if (eq currentLocale 'en')}}active{{/if}}" href="/language/en">{{t 'common.english'}}</a></li>
+                <li><a class="dropdown-item {{#if (eq currentLocale 'vi')}}active{{/if}}" href="/language/vi">{{t 'common.vietnamese'}}</a></li>
               </ul>
             </div>
             <!-- User Dropdown -->

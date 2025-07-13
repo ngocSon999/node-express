@@ -8,27 +8,3 @@ exports.getLogin = catchAsync(async (req, res) => {
         layout: 'auth'
     });
 });
-
-exports.postLogin = catchAsync(async (req, res) => {
-    const { email, password } = req.body;
-
-    const result = await authService.login(email, password);
-
-    if (!result.success) {
-        return res.render('auth/login', {
-            title: 'Login',
-            layout: 'auth',
-            error: result.message,
-            email
-        });
-    }
-
-    // Set token in cookie
-    res.cookie('token', result.data.token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 24 * 60 * 60 * 1000 // 1 day
-    });
-
-    res.redirect(getRoute('dashboard'));
-});

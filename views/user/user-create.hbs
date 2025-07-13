@@ -3,42 +3,42 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Create New User</h3>
+                    <h3 class="card-title">{{t 'user.createNew'}}</h3>
                     <div class="card-tools">
-                        <a href="{{ routes 'userManage'}}" class="btn btn-secondary">Back to List</a>
+                        <a href="{{ routes 'userManage'}}" class="btn btn-secondary">{{t 'common.back'}}</a>
                     </div>
                 </div>
                 <div class="card-body">
                     <form id="createUserForm" enctype="multipart/form-data">
                         <div class="mb-3">
-                            <label for="name" class="form-label">Name</label>
+                            <label for="name" class="form-label">{{t 'user.name'}}</label>
                             <input name="name" type="text" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
+                            <label for="email" class="form-label">{{t 'user.email'}}</label>
                             <input name="email" type="email" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label for="phone" class="form-label">Phone</label>
+                            <label for="phone" class="form-label">{{t 'user.phone'}}</label>
                             <input name="phone" type="text" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label for="avatar" class="form-label">Avatar</label>
+                            <label for="avatar" class="form-label">{{t 'user.avatar'}}</label>
                             <input name="avatar" type="file" class="form-control">
                         </div>
                         <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
+                            <label for="password" class="form-label">{{t 'user.password'}}</label>
                             <input name="password" type="password" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label for="roles" class="form-label">Roles</label>
+                            <label for="roles" class="form-label">{{t 'user.roles'}}</label>
                             <select name="roles" class="form-select" multiple>
                                 {{#each roles}}
                                     <option value="{{this.id}}">{{this.name}}</option>
                                 {{/each}}
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Create User</button>
+                        <button type="submit" class="btn btn-primary">{{t 'common.create'}}</button>
                     </form>
                 </div>
             </div>
@@ -70,13 +70,13 @@ document.getElementById('createUserForm').addEventListener('submit', async funct
 
         if (response.ok) {
             const url = '{{ routes "userManage" }}';
-            showAlert('User created successfully', 'success', url);
+            showAlert('{{t "user.createSuccess"}}', 'success', url);
         } else {
-            showAlert(data.message || 'Error creating user', 'danger');
+            showAlert(data.message || '{{t "user.createError"}}', 'danger');
         }
     } catch (error) {
         console.error('Error:', error);
-        showAlert('Error creating user', 'danger');
+        showAlert('{{t "error.500"}}', 'danger');
     }
 });
 </script>

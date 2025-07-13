@@ -1,7 +1,6 @@
-<h1 class="text-danger">403 - Bạn không có quyền truy cập</h1>
-{{!-- 
+<h1 class="text-danger">403 - {{t 'error.forbidden'}}</h1>
 {{#if error}}
   <div class="alert alert-danger mt-3">{{error}}</div>
-{{/if}} --}}
+{{/if}}
 
-<a href="javascript:history.back()" class="btn btn-secondary mt-3">Quay lại</a>
+<a href="javascript:history.back()" class="btn btn-secondary mt-3">{{t 'common.back'}}</a>

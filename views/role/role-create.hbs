@@ -3,28 +3,28 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Create New Role</h3>
+                    <h3 class="card-title">{{t 'role.createNew'}}</h3>
                     <div class="card-tools">
-                        <a href="{{ routes 'roleManage'}}" class="btn btn-secondary">Back to List</a>
+                        <a href="{{ routes 'roleManage'}}" class="btn btn-secondary">{{t 'common.back'}}</a>
                     </div>
                 </div>
                 <div class="card-body">
                     <form id="createRoleForm">
                         <div class="form-group">
-                            <label for="name">Role Name</label>
+                            <label for="name">{{t 'role.name'}}</label>
                             <input type="text" class="form-control" id="name" name="name" required>
                         </div>
                         <div class="form-group">
-                            <label for="description">Description</label>
+                            <label for="description">{{t 'role.description'}}</label>
                             <textarea class="form-control" id="description" name="description" rows="3"></textarea>
                         </div>
                         <div class="form-group">
-                            <label>Permissions</label>
+                            <label>{{t 'role.permissions'}}</label>
                             <div class="mb-3">
                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input" id="select_all" name="select_all">
                                     <label class="custom-control-label" for="select_all">
-                                        <span>Select All</span>
+                                        <span>{{t 'common.selectAll'}}</span>
                                     </label>
                                 </div>
                             </div>
@@ -108,7 +108,7 @@
                                 }
                             });
                         </script>
-                        <button type="submit" class="btn btn-primary mt-3">Create Role</button>
+                        <button type="submit" class="btn btn-primary mt-3">{{t 'common.create'}}</button>
                     </form>
                 </div>
             </div>
@@ -141,12 +141,12 @@ document.getElementById('createRoleForm').addEventListener('submit', async (e) =
 
         if (data.success) {
             const url = '{{ routes "roleManage" }}';
-            showAlert('Role created successfully', 'success', url);
+            showAlert('{{t "role.createSuccess"}}', 'success', url);
         } else {
-            showAlert(data.message || 'Error creating role');
+            showAlert(data.message || '{{t "role.createError"}}');
         }
     } catch (error) {
-        showAlert('Error creating role');
+        showAlert('{{t "error.500"}}');
     }
 });
 </script>
