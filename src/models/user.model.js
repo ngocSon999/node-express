@@ -37,6 +37,9 @@ module.exports = (connection) => {
     const user = connection.define(modelName.user, attributes, {
         timestamps: true,
         tableName: modelName.user,
+        defaultScope: {
+        attributes: { exclude: ['password'] } // auto hidden password
+    }
     });
 
     user.associate = (models) => {
