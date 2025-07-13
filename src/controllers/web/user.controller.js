@@ -23,7 +23,7 @@ exports.getCreate = catchAsync(async (req, res, next) => {
    
     res.render('user/user-create', {
         title: 'Create User',
-        roles
+        roles: roles.data
     });
 });
 

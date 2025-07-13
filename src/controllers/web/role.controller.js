@@ -17,9 +17,10 @@ exports.getAllRoles = catchAsync(async (req, res, next) => {
 exports.getCreateForm = catchAsync(async (req, res, next) => {
     try {
         const permissions = await permissionService.getAll();
+      
         res.render('role/role-create', { 
             title: 'Create New Role',
-            permissions: permissions.data
+            groupedPermissions: permissions.groupedData 
         });
     } catch (error) {
         next(error);
@@ -36,7 +37,7 @@ exports.getEditForm = catchAsync(async (req, res, next) => {
         res.render('role/role-edit', { 
             title: 'Edit Role',
             role: role.data,
-            permissions: permissions.data,
+            groupedPermissions: permissions.groupedData, 
             helpers: {
                 isSelected: function(permissionId, rolePermissions) {
                     return rolePermissions && rolePermissions.some(p => p.id === permissionId);

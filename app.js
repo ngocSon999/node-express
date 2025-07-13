@@ -50,6 +50,16 @@ app.engine('.hbs', engine({
       if (!permissions || !Array.isArray(permissions)) return '';
       return permissions.map(p => p.name).join(', ');
     },
+
+    split: (str) => {
+      if (!str) return [];
+      const parts = str.split(' ');
+      return {
+        first: parts[0], // action (create, update, delete, etc)
+        last: parts[parts.length - 1], // module (user, role, etc)
+        parts: parts
+      };
+    },
   }
 }));
 app.set('view engine', '.hbs');

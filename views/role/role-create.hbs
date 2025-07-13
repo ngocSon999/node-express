@@ -21,11 +21,20 @@
                         <div class="form-group">
                             <label>Permissions</label>
                             <div class="row">
-                                {{#each permissions}}
-                                <div class="col-md-4">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="permission_{{this.id}}" name="permissions" value="{{this.id}}">
-                                        <label class="custom-control-label" for="permission_{{this.id}}">{{this.name}}</label>
+                                {{#each groupedPermissions}}
+                                <div class="col-md-12 mb-3">
+                                    <h5 class="text-capitalize">{{@key}}</h5>
+                                    <div class="row pl-3">
+                                        {{#each this}}
+                                        <div class="col-md-4">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="permission_{{this.id}}" name="permissions" value="{{this.id}}">
+                                                <label class="custom-control-label" for="permission_{{this.id}}">
+                                                    {{#with (split this.name)}}{{first}}{{/with}}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        {{/each}}
                                     </div>
                                 </div>
                                 {{/each}}

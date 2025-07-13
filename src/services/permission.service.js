@@ -1,6 +1,30 @@
 const { db, connection } = require('../utils/initializeDb');
 const { modelName } = require('../constants/modelName');
 
+const groupPermissionsByModule = (permissions) => {
+  const modules = {};
+
+  permissions.forEach(permission => {
+    // Tách từ cuối: 'create user' → ['create', 'user']
+    const parts = permission.name.split(' ');
+    const module = parts[parts.length - 1]; // lấy 'user' hoặc 'role'
+
+    if (!modules[module]) {
+      modules[module] = [];
+    }
+
+    modules[module].push(permission);
+  });
+
+  // Sắp xếp theo tên action trong mỗi module (optional)
+  Object.keys(modules).forEach(key => {
+    modules[key].sort((a, b) => a.name.localeCompare(b.name));
+  });
+ 
+  return modules;
+};
+
+
 module.exports.getAll = async () => {
     try {
         const PermissionModel = db[modelName.permission];
@@ -8,9 +32,13 @@ module.exports.getAll = async () => {
             order: [['name', 'ASC']]
         });
 
+        const plainPermissions = permissions.map(permission => permission.get({ plain: true }));
+        const groupedPermissions = groupPermissionsByModule(plainPermissions);
+
         return {
             success: true,
-            data: permissions.map(permission => permission.get({ plain: true }))
+            data: plainPermissions,
+            groupedData: groupedPermissions
         };
     } catch (error) {
         console.error('Error getting permissions:', error);
