@@ -11,7 +11,6 @@ const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV.trim()}` : '
 const envPath = path.resolve(__dirname, envFile);
 
 if (!process.env.RUN_CPANEL_SERVER && fs.existsSync(envPath)) {
-    console.log('🚀 ~ Loading env from:', envPath);
     dotenv.config({ path: envPath });
 } else {
     dotenv.config(); 
