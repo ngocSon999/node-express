@@ -4,3 +4,9 @@
     right: 20px;
     
 }
+.table thead tr th:last-child {
+    width: 15%;
+} 
+.table .btn-sm {
+    padding: 0 4px;
+}
