@@ -5,7 +5,7 @@
                 <div class="card-header">
                     <h3 class="card-title">{{t 'user.editUser'}}</h3>
                     <div class="card-tools">
-                        <a href="/user" class="btn btn-secondary">{{t 'common.back'}}</a>
+                        <a href="/admin/user" class="btn btn-secondary">{{t 'common.back'}}</a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -79,7 +79,6 @@ document.querySelector('#editUserForm').addEventListener('submit', async functio
         } catch (err) {
         data.message = 'Cannot parse error response';
         }
-
 
         if (res.ok) {
             const url = '{{ routes "userManage" }}'

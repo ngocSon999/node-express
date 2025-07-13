@@ -1,3 +1,94 @@
+<style>
+    /* DataTables Processing indicator */
+    .dataTables_processing {
+        position: absolute;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        z-index: 999;
+        padding: 1rem !important;
+        border: none !important;
+        background: rgba(255, 255, 255, 0.9) !important;
+        border-radius: 0.5rem !important;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+
+    /* Table Styles */
+    .table th {
+        white-space: nowrap;
+        padding: 1rem;
+    }
+
+    .table td {
+        padding: 0.75rem 1rem;
+        vertical-align: middle;
+    }
+
+    /* Responsive Modal Styles */
+    div.dtr-modal {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        border-radius: 0.5rem;
+    }
+
+    div.dtr-modal-content {
+        border-radius: 0.5rem;
+    }
+
+    div.dtr-modal-header {
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+        padding: 1rem;
+    }
+
+    div.dtr-modal-body {
+        padding: 1rem;
+    }
+
+    div.dtr-modal-close {
+        top: 0.75rem;
+        right: 0.75rem;
+    }
+
+    /* Button Spacing */
+    .btn + .btn {
+        margin-left: 0.25rem;
+    }
+
+    /* Tooltip Styles */
+    .tooltip {
+        font-size: 0.875rem;
+    }
+
+    /* Code Block Styles */
+    code {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.875em;
+        background-color: rgba(0, 0, 0, 0.05);
+        border-radius: 0.25rem;
+    }
+
+    /* Font Weight Helper */
+    .fw-medium {
+        font-weight: 500 !important;
+    }
+
+    /* Button Icon Styles */
+    .btn i {
+        font-size: 1rem;
+        line-height: 1;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    /* Text Truncation */
+    .table td {
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h3 class="m-0">{{t 'user.management'}}</h3>
   {{#if (hasPermission user 'create user')}}
@@ -5,58 +96,181 @@
   {{/if}}
 </div>
 
-<table class="table table-bordered table-hover align-middle">
-  <thead class="table-light">
-    <tr>
-      <th>#</th>
-      <th>{{t 'user.avatar'}}</th>
-      <th>{{t 'user.name'}}</th>
-      <th>{{t 'user.email'}}</th>
-      <th>{{t 'user.phone'}}</th>
-      <th>{{t 'user.createdAt'}}</th>
-      <th>{{t 'user.roles'}}</th>
-      <th>{{t 'common.actions'}}</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each users}}
-      <tr>
-        <td>{{@index}}</td>
-        <td>
-          <img src="{{this.avatar}}" alt="{{t 'user.avatar'}}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
-        </td>
-        <td>{{this.name}}</td>
-        <td>{{this.email}}</td>
-        <td>{{this.phone}}</td>
-        <td>{{moment this.createdAt "DD/MM/YYYY hh:mm A" }}</td>
-        <td>
-          {{#each this.roles}}
-            <span class="badge bg-info me-1">{{this.name}}</span>
-          {{/each}}
-        </td>
-        <td>
-            {{#if (hasPermission ../user 'read user')}}
-            <a href="{{routes 'userDetail' this.id}}" class="btn btn-info btn-sm">{{t 'common.detail'}}</a>
-            {{/if}}
-            {{#if (hasPermission ../user 'update user')}}
-            <a href="{{routes 'userEdit' this.id}}" class="btn btn-sm btn-warning">{{t 'common.edit'}}</a>
-            {{/if}}
-            {{#if (hasPermission ../user 'delete user')}}
-            <button class="btn btn-sm btn-danger" onclick="deleteUser({{this.id}})">{{t 'common.delete'}}</button>
-            {{/if}}
-        </td>
-      </tr>
-    {{else}}
-      <tr>
-        <td colspan="7" class="text-center">{{t 'user.noUsersFound'}}</td>
-      </tr>
-    {{/each}}
-  </tbody>
-</table>
+<div class="table-responsive">
+    <table id="userTable" class="table table-bordered table-hover align-middle w-100">
+        <thead class="table-light">
+            <tr>
+                <th class="text-center">ID</th>
+                <th>{{t 'user.avatar'}}</th>
+                <th>{{t 'user.name'}}</th>
+                <th>{{t 'user.email'}}</th>
+                <th>{{t 'user.phone'}}</th>
+                <th>{{t 'user.createdAt'}}</th>
+                <th>{{t 'user.roles'}}</th>
+                <th class="text-center">{{t 'common.actions'}}</th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr>
+              <td colspan="6" class="text-center">
+                  <div class="py-4">
+                      <div class="spinner-border text-primary" role="status">
+                          <span class="visually-hidden">{{t 'common.loading'}}...</span>
+                      </div>
+                      <div class="mt-2">{{t 'common.loading'}}...</div>
+                  </div>
+              </td>
+          </tr>
+      </tbody>
+    </table>
+</div>
 
 <script>
-async function deleteUser(id) {
-    if (confirm('{{t "user.deleteConfirm"}}')) {
+    function initializeDataTable() {
+       const table = $('#userTable');
+        if ($.fn.DataTable.isDataTable(table)) {
+            table.DataTable().destroy();
+        }
+
+        dataTable = table.DataTable({
+            processing: false,
+            serverSide: false,
+            deferRender: true,
+            language: {
+                processing: '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>'
+            },
+            ajax: {
+                url: '/api/v1/user',
+                 type: 'GET',
+                 beforeSend: function() {
+                     table.addClass('loading');
+                 },
+                 dataSrc: function(json) {
+                     table.removeClass('loading');
+                     if (!json || !json.success) {
+                         if (json && json.message === 'Unauthorized') {
+                             window.location.href = '/admin/login';
+                             return [];
+                         }
+                         showAlert('{{t "error.500"}}', 'error');
+                         return [];
+                     }
+                     return json.data || [];
+                 },
+                 error: function(xhr, error, thrown) {
+                     table.removeClass('loading');
+                     if (xhr.status === 401) {
+                         window.location.href = '/admin/login';
+                         return [];
+                     }
+                     console.error('DataTables error:', error);
+                     showAlert('{{t "error.500"}}', 'error');
+                     return [];
+                 }
+             },
+            columns: [
+                { 
+                    data: 'id',
+                    className: 'text-center'
+                },
+                { 
+                    data: 'avatar',
+                    render: function(data) {
+                        return data ? 
+                            `<img src="${data}" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">` :
+                            `<div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;"><i class="bi bi-person text-white"></i></div>`;
+                    }
+                },
+                { 
+                    data: 'name',
+                    render: function(data) {
+                        return data ? `<span class="fw-medium">${data}</span>` : '-';
+                    }
+                },
+                { 
+                    data: 'email',
+                    render: function(data) {
+                        return data ? `<code>${data}</code>` : '-';
+                    }
+                },
+                { 
+                    data: 'phone',
+                    render: function(data) {
+                        return data || '-';
+                    }
+                },
+                { 
+                    data: 'createdAt',
+                    render: function(data) {
+                        return data ? moment(data).format('DD/MM/YYYY HH:mm') : '-';
+                    }
+                },
+                {
+                  data: 'roles',
+                  render: function(data) {
+                    if (!data || !Array.isArray(data)) return '-';
+                    return data.map(role =>
+                      `<span class="badge bg-info me-1">${role.name}</span>`
+                    ).join('<br>');
+                  }
+                },
+                {
+                    data: null,
+                    className: 'text-center',
+                    orderable: false,
+                    render: function(data, type, row) {
+                        let buttons = [];
+                        
+                        if (hasPermission(currentUser, 'read user')) {
+                            buttons.push(`<a href="/admin/user/${row.id}" class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="{{t 'common.detail'}}"><i class="bi bi-eye"></i></a>`);
+                        }
+                        
+                        if (hasPermission(currentUser, 'update user')) {
+                            buttons.push(`<a href="/admin/user/edit/${row.id}" class="btn btn-warning btn-sm ms-1" data-bs-toggle="tooltip" title="{{t 'common.edit'}}"><i class="bi bi-pencil"></i></a>`);
+                        }
+                        
+                        if (hasPermission(currentUser, 'delete user')) {
+                            buttons.push(`<button class="btn btn-danger btn-sm ms-1" onclick="deleteUser(${row.id})" data-bs-toggle="tooltip" title="{{t 'common.delete'}}"><i class="bi bi-trash"></i></button>`);
+                        }
+                        
+                        return buttons.join('');
+                    }
+                }
+            ],
+            order: [[0, 'desc']],
+            autoWidth: false,
+            stateSave: true,
+            stateDuration: 0,
+            language: {
+                url: `/js/datatable-i18n/${document.documentElement.lang}.json`
+            },
+            drawCallback: function() {
+                // Khởi tạo lại tooltips
+                const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                tooltips.forEach(tooltip => {
+                    new bootstrap.Tooltip(tooltip);
+                });
+                // Ẩn loading indicator
+                $('.dataTables_processing').hide();
+            },
+            preDrawCallback: function() {
+                // Hủy tooltips cũ
+                const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                tooltips.forEach(tooltip => {
+                    const instance = bootstrap.Tooltip.getInstance(tooltip);
+                    if (instance) {
+                        instance.dispose();
+                    }
+                });
+                // Hiển thị loading indicator
+                $('.dataTables_processing').show();
+            }
+        });
+    }
+
+    async function deleteUser(id) {
+        if (!confirm('{{t "user.deleteConfirm"}}')) return;
+
         try {
             const response = await fetch(`/api/v1/user/${id}`, {
                 method: 'DELETE',
@@ -65,21 +279,29 @@ async function deleteUser(id) {
                 }
             });
 
+            if (response.status === 401) {
+                window.location.href = '/admin/login';
+                return;
+            }
+
             const data = await response.json();
 
             if (data.success) {
                 showAlert('{{t "user.deleteSuccess"}}', 'success');
-                // Reload the page after a short delay to show the alert
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
+                // Xóa cache cho user đã bị xóa
+                clearPermissionCache(id);
+                // Reload DataTable
+                dataTable.ajax.reload();
             } else {
                 showAlert(data.message || '{{t "user.deleteError"}}', 'error');
             }
         } catch (error) {
-            console.error('Error deleting user:', error);
+            console.error('Error deleting user:', {
+                error,
+                userId: id,
+                stack: error.stack
+            });
             showAlert('{{t "error.500"}}', 'error');
         }
     }
-}
 </script>

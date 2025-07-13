@@ -12,7 +12,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped table-hover">
+                        <table id="roleTableBody" class="table table-bordered table-striped table-hover">
                             <thead class="table-light">
                                 <tr>
                                     <th class="text-center">ID</th>
@@ -23,7 +23,7 @@
                                     <th class="text-center">{{t 'common.actions'}}</th>
                                 </tr>
                             </thead>
-                            <tbody id="roleTableBody">
+                            <tbody>
                                 <tr>
                                     <td colspan="6" class="text-center">
                                         <div class="py-4">
@@ -164,7 +164,7 @@
 
 <script>
     function initializeDataTable() {
-        const table = $('#roleTableBody').parent();
+        const table = $('#roleTableBody');
         if ($.fn.DataTable.isDataTable(table)) {
             table.DataTable().destroy();
         }

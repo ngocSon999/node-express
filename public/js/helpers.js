@@ -117,7 +117,9 @@ function cleanupCache() {
 setInterval(cleanupCache, CACHE_CLEANUP_INTERVAL);
 
 document.addEventListener("DOMContentLoaded", function () {
-    initializeDataTable();
+    if (typeof initializeDataTable === 'function') {
+        initializeDataTable();
+    }
     // Dọn dẹp cache khi load trang
     cleanupCache();
 });
